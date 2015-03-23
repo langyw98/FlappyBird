@@ -18,6 +18,7 @@ public class MainActivity extends Activity {
     }
     
     public void BtnOnClick(View view){
-    	backgroundView.startScroll();
+    	BackgroudView background = (BackgroudView) findViewById(R.id.background_view);
+    	background.switchSroll();
     }
 }

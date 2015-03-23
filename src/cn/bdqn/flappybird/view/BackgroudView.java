@@ -23,29 +23,34 @@ public class BackgroudView extends View {
 
 	private Bitmap srcBackground = null;
 	private int offsetX = 0;
-	private boolean isStart = true;
+	private boolean isStart = false;
 	
 	Handler handler = new Handler();
 	Runnable runnable = new Runnable() {
 		
 		@Override
 		public void run() {
+			// TODO Auto-generated method stub
+			//重置offsetX
 			if(Math.abs(offsetX) >= srcBackground.getWidth()){
 				offsetX += srcBackground.getWidth();
 			}
+			//改变偏移量
 			offsetX -= 5;
+			//更新背景图
 			postInvalidate();
+			//每隔50毫秒更新一次
 			handler.postDelayed(runnable, 50);
 		}
 	};
 	
-	public void startScroll(){
-		if(isStart){
+	public void switchSroll(){
+		if(!isStart){
 			handler.post(runnable);
-			isStart = false;
+			isStart = true;
 		}else{
 			handler.removeCallbacks(runnable);
-			isStart = true;
+			isStart = false;
 		}
 	}
 
@@ -54,7 +59,7 @@ public class BackgroudView extends View {
 		// TODO Auto-generated method stub
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 		if(srcBackground == null){
-			srcBackground = BitmapFactory.decodeResource(getResources(), R.raw.background_block, null);
+			srcBackground = BitmapFactory.decodeResource(getResources(), R.drawable.background_block, null);
 			float height = (float)getMeasuredHeight();
 			
 			float zoom = height / srcBackground.getHeight();
@@ -69,14 +74,15 @@ public class BackgroudView extends View {
 	protected void onDraw(Canvas canvas) {
 		// TODO Auto-generated method stub
 		Rect srcRect = new Rect(0, 0 , srcBackground.getWidth(), srcBackground.getHeight());
-		
+		//获得屏幕宽度
 		int width = getMeasuredWidth();
 		int count = (int)Math.ceil((double)width / srcRect.width());
-		for(int i = 0; i <= count; i++){
+		for(int i = 0 ; i <= count; i++){
 			Rect dstRect = new Rect(srcRect);
-			int picWidth = srcRect.width();
-			dstRect.offset((offsetX + (picWidth * i)), 0);
+			//计算偏移量
+			dstRect.offset(offsetX + (i * srcRect.width()), 0);
 			canvas.drawBitmap(srcBackground, srcRect, dstRect, null);
-		}	
+		}
+		
 	}	
 }
